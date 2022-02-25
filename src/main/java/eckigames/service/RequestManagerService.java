@@ -29,7 +29,9 @@ public class RequestManagerService {
     }
 
     public LoginInformationDTO loginUser(PlayerDTO playerDTO, String worldName) {
-        removeOldPlayers(worldName);
+        WorldDTO worldDTO = getWorld(worldName);
+        if (worldDTO != null) worldDTO.removeOldPlayers();
+
         List<PlayerDTO> activePlayers = activeWorlds.get(worldName).getAllPlayers();
         if(activePlayers.size() <= 150) {
             PlayerDTO player = getPlayer(playerDTO, worldName);
@@ -45,7 +47,9 @@ public class RequestManagerService {
     }
 
     public PlayerDTO verifyUser(String token, String worldName) {
-        removeOldPlayers(worldName);
+        WorldDTO worldDTO = getWorld(worldName);
+        if (worldDTO != null) worldDTO.removeOldPlayers();
+
         PlayerDTO player = getPlayerByToken(token, worldName);
         if(player == null) {
             throw new UserDoesNotExistException();
@@ -80,16 +84,6 @@ public class RequestManagerService {
             }
         }
         return null;
-    }
-
-    private void removeOldPlayers(String worldName) {
-        WorldDTO world = activeWorlds.get(worldName);
-        if(world == null) return;
-
-        List<PlayerDTO> activePlayers = world.getAllPlayers();
-        activePlayers.removeIf(playerDTO -> (
-                playerDTO.isOld(world)
-                ));
     }
 
     public WorldDTO getWorld(String worldName) {

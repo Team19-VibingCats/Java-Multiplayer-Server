@@ -114,6 +114,23 @@ public class WorldDTO {
         }
     }
 
+    public void removeOldPlayers() {
+        List<String> tokensToRemove = new ArrayList<>();
+
+        for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
+            PlayerDTO player = entry.getValue();
+            if(player.isOld()) tokensToRemove.add(entry.getKey());
+        }
+
+        boolean hostRemoved = false;
+        for (String token: tokensToRemove) {
+            if(tokens.get(token).equals(host)) hostRemoved = true;
+            tokens.remove(token);
+        }
+
+        if(hostRemoved) switchHost();
+    }
+
     public PlayerDTO getHost() {
         return host;
     }

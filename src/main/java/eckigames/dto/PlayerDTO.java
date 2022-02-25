@@ -30,12 +30,27 @@ public class PlayerDTO {
         this.lastRequest = lastRequest;
     }
 
-    public boolean isOld(WorldDTO world) {
+    public boolean isOld() {
         if(((int) System.currentTimeMillis() - getLastRequest()) / 1000 >= 10) {
-            if(world.getHost() == this) world.switchHost();
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // self check
+        if (this == o)
+            return true;
+        // null check
+        if (o == null)
+            return false;
+        // type check and cast
+        if (getClass() != o.getClass())
+            return false;
+        PlayerDTO player = (PlayerDTO) o;
+        // field comparison
+        return name.equals(player.getName());
     }
 }

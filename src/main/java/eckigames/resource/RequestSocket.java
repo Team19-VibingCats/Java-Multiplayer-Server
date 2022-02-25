@@ -22,8 +22,6 @@ public class RequestSocket {
 
     @OnMessage
     public String onMessage(String requestString, Session session) {
-        System.out.println("message recieved");
-        System.out.println(requestString);
         String[] requestData = requestString.split("&");
         String token = requestData[1];
         String worldName = requestData[2];
