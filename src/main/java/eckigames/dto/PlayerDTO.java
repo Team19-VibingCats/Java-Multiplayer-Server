@@ -29,4 +29,13 @@ public class PlayerDTO {
     public void setLastRequest(int lastRequest) {
         this.lastRequest = lastRequest;
     }
+
+    public boolean isOld(WorldDTO world) {
+        if(((int) System.currentTimeMillis() - getLastRequest()) / 1000 >= 10) {
+            if(world.getHost() == this) world.switchHost();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

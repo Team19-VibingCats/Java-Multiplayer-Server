@@ -8,6 +8,9 @@ public class WorldDTO {
     String name;
 
     private HashMap<PlayerDTO, List<String>> unprocessedRequests = new HashMap<>();
+    private List<String> persistentRequests = new ArrayList<>();
+
+    private PlayerDTO host;
 
     public WorldDTO(int serverTime, String name) {
         this.serverTime = serverTime;
@@ -45,10 +48,31 @@ public class WorldDTO {
     public LoginInformationDTO loginPlayer(PlayerDTO playerDTO) {
         String token = UUID.randomUUID().toString();
         tokens.put(token,playerDTO);
+
+        if(host == null) switchHost();
+
+        if (!unprocessedRequests.containsKey(playerDTO)) {
+            unprocessedRequests.put(playerDTO,new ArrayList<>());
+        }
+        List<String> requestList = unprocessedRequests.get(playerDTO);
+        for(String persistentRequest : persistentRequests) {
+            requestList.add(persistentRequest);
+        }
+
         return new LoginInformationDTO(token,serverTime);
     }
 
-    public void addUnprocessedEvent(PlayerDTO from, String unprocessedRequest) {
+    public void switchHost() {
+        host = null;
+
+        for(PlayerDTO player : tokens.values()) {
+            host = player;
+            hostChanged();
+            return;
+        }
+    }
+
+    public void addUnprocessedEvent(PlayerDTO from, String unprocessedRequest, String persistent) {
         for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
             PlayerDTO player = entry.getValue();
 
@@ -59,11 +83,38 @@ public class WorldDTO {
                 unprocessedRequests.get(player).add(unprocessedRequest);
             }
         }
+
+        if (persistent == "True") {
+            persistentRequests.add(unprocessedRequest);
+        }
     }
 
     public Object[] popUnprocessedEvents(PlayerDTO player) {
         List<String> requests = unprocessedRequests.get(player);
+        Object[] array = requests.toArray();
         unprocessedRequests.get(player).clear();
-        return requests.toArray();
+        return array;
+    }
+
+    private void hostChanged() {
+        System.out.println("host changed");
+        for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
+            PlayerDTO player = entry.getValue();
+            if (!unprocessedRequests.containsKey(player)) {
+                unprocessedRequests.put(player,new ArrayList<>());
+            }
+
+            if (player.equals(host)) {
+                String hostRequest = "\"functionName\": \"isHost\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+                unprocessedRequests.get(player).add(hostRequest);
+            } else {
+                String hostRequest = "\"functionName\": \"isClient\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+                unprocessedRequests.get(player).add(hostRequest);
+            }
+        }
+    }
+
+    public PlayerDTO getHost() {
+        return host;
     }
 }

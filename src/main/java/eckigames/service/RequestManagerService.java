@@ -67,6 +67,9 @@ public class RequestManagerService {
     }
 
     public PlayerDTO getPlayerByToken(String token, String worldName) {
+        System.out.println(worldName);
+        System.out.println(activeWorlds.keySet().toString());
+        System.out.println(activeWorlds.containsKey(worldName));
         return activeWorlds.get(worldName).getPlayerByToken(token);
     }
 
@@ -80,10 +83,13 @@ public class RequestManagerService {
     }
 
     private void removeOldPlayers(String worldName) {
-        List<PlayerDTO> activePlayers = activeWorlds.get(worldName).getAllPlayers();
+        WorldDTO world = activeWorlds.get(worldName);
+        if(world == null) return;
+
+        List<PlayerDTO> activePlayers = world.getAllPlayers();
         activePlayers.removeIf(playerDTO -> (
-                (int) System.currentTimeMillis() - playerDTO.getLastRequest()) / 1000 >= 10
-                );
+                playerDTO.isOld(world)
+                ));
     }
 
     public WorldDTO getWorld(String worldName) {
