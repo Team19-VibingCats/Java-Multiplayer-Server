@@ -1,9 +1,13 @@
 package eckigames.dto;
 
+import javax.websocket.Session;
+
 public class PlayerDTO {
     String name;
 
     int lastRequest;
+
+    private Session session;
 
     public PlayerDTO() {
 
@@ -36,6 +40,14 @@ public class PlayerDTO {
         } else {
             return false;
         }
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     @Override

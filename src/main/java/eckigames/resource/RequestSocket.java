@@ -26,6 +26,7 @@ public class RequestSocket {
         String token = requestData[1];
         String worldName = requestData[2];
         PlayerDTO player = requestManagerService.verifyUser(token, worldName);
+        player.setSession(session);
         player.setLastRequest((int) System.currentTimeMillis());
 
         WorldDTO world = requestManagerService.getWorld(worldName);
@@ -48,7 +49,7 @@ public class RequestSocket {
 
     @OnClose
     public void onClose(Session session) throws IOException {
-        System.out.println("connection closed");
+        requestManagerService.removePlayer(session);
     }
 
     @OnError

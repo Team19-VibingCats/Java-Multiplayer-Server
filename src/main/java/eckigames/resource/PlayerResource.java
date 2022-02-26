@@ -31,4 +31,13 @@ public class PlayerResource {
         List<PlayerDTO> players = requestManagerService.getAllPlayers(worldName);
         return Response.status(Response.Status.OK).entity(g.toJson(players)).build();
     }
+
+    @DELETE
+    @Path("/{token}/logout/{worldName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response logoutPlayer(PlayerDTO playerDTO, @PathParam("worldName") String worldName, @PathParam("token") String token) {
+        PlayerDTO player = requestManagerService.verifyUser(token,worldName);
+        requestManagerService.getWorld(worldName).removePlayer(player);
+        return Response.status(Response.Status.OK).entity("ok").build();
+    }
 }

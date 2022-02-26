@@ -59,6 +59,11 @@ public class WorldDTO {
             requestList.add(persistentRequest);
         }
 
+        if(!playerDTO.equals(host)) {
+            String hostRequest = "\"functionName\": \"isClient\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+            requestList.add(hostRequest);
+        }
+
         return new LoginInformationDTO(token,serverTime);
     }
 
@@ -142,6 +147,32 @@ public class WorldDTO {
         }
 
         if(hostRemoved) switchHost();
+    }
+
+    public void removePlayer(PlayerDTO playerDTO) {
+        String name = "";
+        for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
+            String token = entry.getKey();
+            PlayerDTO player = entry.getValue();
+            name = player.getName();
+
+            if(player.equals(playerDTO)) {
+                tokens.remove(token);
+                if (playerDTO.equals(host)) switchHost();
+                break;
+            }
+        }
+
+        String request = "\"functionName\": \"queue_free\",\"nodePath\": \"/root/CurrentScene/"+name+"\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+        persistentRequests.add(request);
+        for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
+            PlayerDTO player = entry.getValue();
+            if (!unprocessedRequests.containsKey(player)) {
+                unprocessedRequests.put(player, new ArrayList<>());
+            }
+
+            unprocessedRequests.get(player).add(request);
+        }
     }
 
     public PlayerDTO getHost() {

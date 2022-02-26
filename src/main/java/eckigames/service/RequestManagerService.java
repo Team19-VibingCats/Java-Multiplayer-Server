@@ -5,9 +5,11 @@ import eckigames.dto.PlayerDTO;
 import eckigames.dto.WorldDTO;
 import eckigames.service.exception.*;
 
+import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RequestManagerService {
     static HashMap<String, WorldDTO> activeWorlds;
@@ -81,6 +83,18 @@ public class RequestManagerService {
             }
         }
         return null;
+    }
+
+    public void removePlayer(Session session) {
+        for(Map.Entry<String, WorldDTO> entry : activeWorlds.entrySet()) {
+            WorldDTO worldDTO = entry.getValue();
+
+            for(PlayerDTO playerDTO : worldDTO.getAllPlayers()) {
+                if(playerDTO.getSession() == session) {
+                    worldDTO.removePlayer(playerDTO);
+                }
+            }
+        }
     }
 
     public WorldDTO getWorld(String worldName) {
