@@ -71,9 +71,6 @@ public class RequestManagerService {
     }
 
     public PlayerDTO getPlayerByToken(String token, String worldName) {
-        System.out.println(worldName);
-        System.out.println(activeWorlds.keySet().toString());
-        System.out.println(activeWorlds.containsKey(worldName));
         return activeWorlds.get(worldName).getPlayerByToken(token);
     }
 

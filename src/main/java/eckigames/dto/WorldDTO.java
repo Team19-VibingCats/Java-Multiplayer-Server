@@ -84,7 +84,8 @@ public class WorldDTO {
             }
         }
 
-        if (persistent == "True") {
+        boolean bool = Boolean.parseBoolean(persistent.toLowerCase());
+        if (bool) {
             persistentRequests.add(unprocessedRequest);
         }
     }
@@ -125,7 +126,19 @@ public class WorldDTO {
         boolean hostRemoved = false;
         for (String token: tokensToRemove) {
             if(tokens.get(token).equals(host)) hostRemoved = true;
+
+            String request = "\"functionName\": \"queue_free\",\"nodePath\": \"/root/CurrentScene/"+tokens.get(token).getName()+"\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+            persistentRequests.add(request);
+
             tokens.remove(token);
+            for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
+                PlayerDTO player = entry.getValue();
+                if (!unprocessedRequests.containsKey(player)) {
+                    unprocessedRequests.put(player, new ArrayList<>());
+                }
+
+                unprocessedRequests.get(player).add(request);
+            }
         }
 
         if(hostRemoved) switchHost();
