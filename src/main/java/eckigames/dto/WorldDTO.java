@@ -57,6 +57,7 @@ public class WorldDTO {
     }
 
     public void addPlayerToGame(PlayerDTO playerDTO) {
+        playerDTO.setInGame(true);
         if(host == null) switchHost();
 
         List<String> requestList = unprocessedRequests.get(playerDTO);
@@ -68,17 +69,17 @@ public class WorldDTO {
             String hostRequest = "\"functionName\": \"isClient\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
             requestList.add(hostRequest);
         }
-
-        playerDTO.setInGame(true);
     }
 
     public void switchHost() {
         host = null;
 
         for(PlayerDTO player : tokens.values()) {
-            host = player;
-            hostChanged();
-            return;
+            if(player.isInGame()) {
+                host = player;
+                hostChanged();
+                return;
+            }
         }
     }
 
