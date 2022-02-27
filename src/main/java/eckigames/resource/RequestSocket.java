@@ -1,6 +1,5 @@
 package eckigames.resource;
 
-import com.google.gson.Gson;
 import eckigames.dto.PlayerDTO;
 import eckigames.dto.WorldDTO;
 import eckigames.service.RequestManagerService;
@@ -13,7 +12,6 @@ import java.io.IOException;
 @ServerEndpoint(value = "/socket")
 public class RequestSocket {
     RequestManagerService requestManagerService = new RequestManagerService();
-    Gson g = new Gson();
 
     @OnOpen
     public void onOpen() {

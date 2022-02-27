@@ -35,7 +35,7 @@ public class PlayerDTO {
     }
 
     public boolean isOld() {
-        if(((int) System.currentTimeMillis() - getLastRequest()) / 1000 >= 10) {
+        if(((int) System.currentTimeMillis() - getLastRequest()) / 1000 >= 120) {
             return true;
         } else {
             return false;
@@ -48,6 +48,11 @@ public class PlayerDTO {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    public String getJSON() {
+        return "{\"name\" : \"" + name
+                + "\"}";
     }
 
     @Override
