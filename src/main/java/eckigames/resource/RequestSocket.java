@@ -2,6 +2,7 @@ package eckigames.resource;
 
 import eckigames.dto.PlayerDTO;
 import eckigames.dto.WorldDTO;
+import eckigames.service.GZIPService;
 import eckigames.service.RequestManagerService;
 import org.json.simple.JSONArray;
 
@@ -19,7 +20,14 @@ public class RequestSocket {
     }
 
     @OnMessage
-    public String onMessage(String requestString, Session session) {
+    public byte[] onMessage(byte[] bytes, Session session) {
+        String requestString = null;
+        try {
+            requestString = GZIPService.decompress(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String[] requestData = requestString.split("&");
         String token = requestData[1];
         String worldName = requestData[2];
@@ -42,7 +50,14 @@ public class RequestSocket {
             jsArray.add(unprocessedRequests[i]);
         }
 
-        return jsArray.toJSONString();
+        String JSONString = jsArray.toJSONString();
+
+        try {
+            return GZIPService.compress(JSONString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes;
     }
 
     @OnClose
