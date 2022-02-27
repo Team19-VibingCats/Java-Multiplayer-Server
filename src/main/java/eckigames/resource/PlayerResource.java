@@ -22,6 +22,16 @@ public class PlayerResource {
         return Response.status(Response.Status.OK).entity(token).build();
     }
 
+    @POST
+    @Path("/{token}/enterWorld/{worldName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response enterWorld(@PathParam("worldName") String worldName, @PathParam("token") String token) {
+        PlayerDTO playerDTO = requestManagerService.verifyUser(token,worldName);
+        requestManagerService.getWorld(worldName).addPlayerToGame(playerDTO);
+
+        return Response.status(Response.Status.OK).entity("ok").build();
+    }
+
     @GET
     @Path("/{token}/lobby/{worldName}")
     @Consumes(MediaType.APPLICATION_JSON)

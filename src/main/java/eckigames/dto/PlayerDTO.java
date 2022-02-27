@@ -9,6 +9,8 @@ public class PlayerDTO {
 
     private Session session;
 
+    boolean inGame = false;
+
     public PlayerDTO() {
 
     }
@@ -40,6 +42,14 @@ public class PlayerDTO {
         } else {
             return false;
         }
+    }
+
+    public boolean isInGame() {
+        return inGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
     }
 
     public Session getSession() {

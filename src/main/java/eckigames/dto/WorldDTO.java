@@ -49,11 +49,16 @@ public class WorldDTO {
         String token = UUID.randomUUID().toString();
         tokens.put(token,playerDTO);
 
-        if(host == null) switchHost();
-
         if (!unprocessedRequests.containsKey(playerDTO)) {
             unprocessedRequests.put(playerDTO,new ArrayList<>());
         }
+
+        return new LoginInformationDTO(token,serverTime);
+    }
+
+    public void addPlayerToGame(PlayerDTO playerDTO) {
+        if(host == null) switchHost();
+
         List<String> requestList = unprocessedRequests.get(playerDTO);
         for(String persistentRequest : persistentRequests) {
             requestList.add(persistentRequest);
@@ -64,7 +69,7 @@ public class WorldDTO {
             requestList.add(hostRequest);
         }
 
-        return new LoginInformationDTO(token,serverTime);
+        playerDTO.setInGame(true);
     }
 
     public void switchHost() {
@@ -81,7 +86,7 @@ public class WorldDTO {
         for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
             PlayerDTO player = entry.getValue();
 
-            if (player != from) {
+            if (player.isInGame() && player != from) {
                 if (!unprocessedRequests.containsKey(player)) {
                     unprocessedRequests.put(player,new ArrayList<>());
                 }
