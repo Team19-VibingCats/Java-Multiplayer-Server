@@ -138,7 +138,7 @@ public class WorldDTO {
         for (String token: tokensToRemove) {
             if(tokens.get(token).equals(host)) hostRemoved = true;
 
-            String request = "\"functionName\": \"queue_free\",\"nodePath\": \"/root/CurrentScene/"+tokens.get(token).getName()+"\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+            String request = "\"functionName\": \"removeFakeObject\",\"nodePath\": \"/root/FakeObjectHandler\",\"parameters\": \"/root/CurrentScene/"+name+"\", \"type\": \"functionCall\" }";
             persistentRequests.add(request);
 
             tokens.remove(token);
@@ -169,7 +169,7 @@ public class WorldDTO {
             }
         }
 
-        String request = "\"functionName\": \"queue_free\",\"nodePath\": \"/root/CurrentScene/"+name+"\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+        String request = "\"functionName\": \"removeFakeObject\",\"nodePath\": \"/root/FakeObjectHandler\",\"parameters\": \"/root/CurrentScene/"+name+"\", \"type\": \"functionCall\" }";
         persistentRequests.add(request);
         for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
             PlayerDTO player = entry.getValue();
