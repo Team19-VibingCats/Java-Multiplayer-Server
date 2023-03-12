@@ -1,6 +1,7 @@
 package eckigames.dto;
 
 import javax.websocket.Session;
+import java.util.HashMap;
 
 public class PlayerDTO {
     String name;
@@ -10,6 +11,16 @@ public class PlayerDTO {
     private Session session;
 
     boolean inGame = false;
+
+    HashMap<String, String> playerData = new HashMap<String, String>();
+
+    public void setPlayerData(String key, String data) {
+        playerData.put(key, data);
+    }
+
+    public String getPlayerData(String key) {
+        return playerData.get(key);
+    }
 
     public PlayerDTO() {
 
@@ -37,12 +48,13 @@ public class PlayerDTO {
     }
 
     public boolean isOld() {
-        if(((int) System.currentTimeMillis() - getLastRequest()) / 1000 >= 120) {
+        if(((int) System.currentTimeMillis() - getLastRequest()) / 1000 >= 30) {
             return true;
         } else {
             return false;
         }
     }
+
 
     public boolean isInGame() {
         return inGame;
@@ -61,8 +73,19 @@ public class PlayerDTO {
     }
 
     public String getJSON() {
-        return "{\"name\" : \"" + name
-                + "\"}";
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.putAll(playerData);
+        data.put("name", name);
+
+        StringBuilder sb = new StringBuilder("{");
+        for (String key : data.keySet()) {
+            sb.append("\"" + key + "\":\"" + data.get(key) + "\",");
+        }
+        sb.deleteCharAt(sb.length() - 1);  // Remove the extra comma
+        sb.append("}");
+
+        String json = sb.toString();
+        return json;
     }
 
     @Override

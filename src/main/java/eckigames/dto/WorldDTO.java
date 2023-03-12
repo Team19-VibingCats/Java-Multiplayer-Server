@@ -66,7 +66,7 @@ public class WorldDTO {
         }
 
         if(!playerDTO.equals(host)) {
-            String hostRequest = "\"functionName\": \"isClient\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+            String hostRequest = "5:\"isClient\",3:\"/root/TokenHandler\", 0:2}";
             requestList.add(hostRequest);
         }
     }
@@ -117,10 +117,10 @@ public class WorldDTO {
             }
 
             if (player.equals(host)) {
-                String hostRequest = "\"functionName\": \"isHost\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+                String hostRequest = "5:\"isHost\",3:\"/root/TokenHandler\", 0:2}";
                 unprocessedRequests.get(player).add(hostRequest);
             } else {
-                String hostRequest = "\"functionName\": \"isClient\",\"nodePath\": \"/root/TokenHandler\",\"parameters\": \"null\", \"type\": \"functionCall\" }";
+                String hostRequest = "5:\"isClient\",3:\"/root/TokenHandler\", 0:2}";
                 unprocessedRequests.get(player).add(hostRequest);
             }
         }
@@ -138,7 +138,7 @@ public class WorldDTO {
         for (String token: tokensToRemove) {
             if(tokens.get(token).equals(host)) hostRemoved = true;
 
-            String request = "\"functionName\": \"removeFakeObject\",\"nodePath\": \"/root/FakeObjectHandler\",\"parameters\": \"/root/CurrentScene/"+name+"\", \"type\": \"functionCall\" }";
+            String request = "5:\"removeFakeObject\",3:\"/root/FakeObjectHandler\",9:\"/root/CurrentScene/"+name+"\",0:2}";
             persistentRequests.add(request);
 
             tokens.remove(token);
@@ -169,7 +169,7 @@ public class WorldDTO {
             }
         }
 
-        String request = "\"functionName\": \"removeFakeObject\",\"nodePath\": \"/root/FakeObjectHandler\",\"parameters\": \"/root/CurrentScene/"+name+"\", \"type\": \"functionCall\" }";
+        String request = "5:\"removeFakeObject\",3:\"/root/FakeObjectHandler\",9:\"/root/CurrentScene/"+name+"\",0:2}";
         persistentRequests.add(request);
         for(Map.Entry<String, PlayerDTO> entry : tokens.entrySet()) {
             PlayerDTO player = entry.getValue();

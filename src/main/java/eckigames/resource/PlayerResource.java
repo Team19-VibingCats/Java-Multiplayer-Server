@@ -47,6 +47,15 @@ public class PlayerResource {
         return Response.status(Response.Status.OK).entity(jsArray.toJSONString()).build();
     }
 
+    @POST
+    @Path("/{token}/setValue/{worldName}/{key}/{value}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setValue(@PathParam("worldName") String worldName, @PathParam("token") String token, @PathParam("key") String key, @PathParam("value") String value) {
+        PlayerDTO player = requestManagerService.verifyUser(token,worldName);
+        player.setPlayerData(key,value);
+        return Response.status(Response.Status.OK).entity("ok").build();
+    }
+
     @DELETE
     @Path("/{token}/logout/{worldName}")
     @Consumes(MediaType.APPLICATION_JSON)
